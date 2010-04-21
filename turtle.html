@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+	<head>
+		<script>
+			/*
+			Javascript implementation of something similar to rdf turtle representation
+			*/
+			function test() {
+				var expression1 = [ ':a', [ ':b', ':c', ':d', [ ':e', ':f' ] ] ];
+				 
+				var trips = [];
+				parse( expression1, trips );
+				console.log( trips );
+			}
+			
+			function parse( expr, triples ) {
+				for( var i=0; i < expr.length; i++ ) {
+					if( typeOf( expr[i] ) == 'array' ) {
+						parse( expr[i], triples );
+					}
+					else {
+						if( triples.length == 0 ) {
+							triples.push( [] );
+						}
+						if( triples[triples.length - 1].length < 3 ) {
+							triples[triples.length - 1].push( expr[i] );
+						}
+						else {
+							triples.push( [] );
+							triples[triples.length - 1].push( expr[i] );
+						}
+					}
+				}
+			}
+			
+			/**
+			* typeOf function published by Douglas Crockford in ECMAScript recommendations
+			* http://www.crockford.com/javascript/recommend.html
+			*/
+			function typeOf(value) {
+				var s = typeof value;
+				if (s === 'object') {
+					if (value) {
+						if (typeof value.length === 'number' &&
+								!(value.propertyIsEnumerable('length')) &&
+								typeof value.splice === 'function') {
+							s = 'array';
+						}
+					} else {
+						s = 'null';
+					}
+				}
+				return s;
+			}
+
+		</script>
+	</head>
+	<body onload="test();">
+	</body>
+</html>
