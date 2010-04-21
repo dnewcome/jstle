@@ -10,8 +10,28 @@
 				 
 				var trips = [];
 				// parse( expression1, trips );
-				parse2( expression1 );
+				// parse2( expression1 );
+				parse3( expression1 );
 				console.log( trips );
+			}
+			
+			function parse3( expr, level ) {
+				level = level || 0;
+				var head = [];
+				var tail = [];
+				var ret = [];
+				for( var i=0; i < expr.length; i++ ) {
+					if( typeOf( expr[i] ) != 'array' ) {
+						head.push( expr[i] );
+					}
+					else {
+						tail = parse3( expr[i], level + 1 );
+					}
+				}
+				for( var j=0; j < tail.length; j++ ) {
+					ret.push( head.concat( tail[j] ) );
+				}
+				return ret;
 			}
 			
 			function parse2( expr ) {
