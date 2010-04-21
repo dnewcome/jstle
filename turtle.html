@@ -9,8 +9,27 @@
 				var expression1 = [ ':a', [ ':b', ':c', ':d', [ ':e', ':f' ] ] ];
 				 
 				var trips = [];
-				parse( expression1, trips );
+				// parse( expression1, trips );
+				parse2( expression1 );
 				console.log( trips );
+			}
+			
+			function parse2( expr ) {
+				var head = [];
+				var tail = [];
+				var ret = [];
+				for( var i=0; i < expr.length; i++ ) {
+					if( typeOf( expr[i] ) != 'array' ) {
+						head.push( expr[i] );
+					}
+					else {
+						tail = parse2( expr[i] );
+					}
+				}
+				for( var j=0; j < tail.length; j++ ) {
+					ret.push( head.concat( tail[j] ) );
+				}
+				return ret;
 			}
 			
 			function parse( expr, triples ) {
