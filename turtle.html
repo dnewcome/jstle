@@ -10,35 +10,74 @@
 			*/
 			function test() {
 				var expression1 = [ ':a', [ ':b', ':c', ':d', [ ':e', ':f' ] ] ];
-				var expression2 = [ ':a', ':b', [ ':c', ':d', ':e', ':f' ] ];				
- 
+				var expression2 = [ ':a', ':b', [ ':c', ':d', ':e', ':f' ] ];		
+				
+				// not valid turtle expression, but parses anyway,
+				var expression3 = [ ':a', [ ':b', [ ':c', ':d', ':e', ':f' ] ] ];		
+				
+				// too many levels 
+				var expression4 = [ ':a', [ ':b', [ ':c', [ ':d', ':e', ':f' ] ] ] ];		
+				
+				var expression5 = [ ':a', [ ':b', [ ':c', ':d' ] ], ':e', [ ':f', ':g' ] ]; // :a :b :c , :d ; :e :f , :g .
+				
 				var trips = [];
 				// parse( expression1, trips );
 				// parse2( expression1 );
 				var result1 = parse4( expression1 );
 				var result2 = parse4( expression2 );
+				var result3 = parse4( expression3 );
+				
+				// throws exception
+				// var result4 = parse4( expression4 );
+				
+				var result5 = parse4( expression5 );
 				
 				console.log( trips );
 			}
 			
 			function parse4( expr, level ) {
+				// we start with level 3 since we are trying to end up
+				// with three-element triples
 				level = level || 3;
+				
 				var ret = [];
 				var temp = [];
+				
+				// iterate over the input elements
 				for( var i=0; i < expr.length; i++ ) {
 					if( typeOf( expr[i] ) == 'array' ) {
+						// TODO: this way of tracking the number
+						// of elements to caputure is kind of goofy
+						var effectivelevel;
+						if( level == 2 ) {
+							effectivelevel = 1;
+						}
+						else if( level == 3 ) {
+							effectivelevel = 3 - temp.length;
+						}
+						else {
+							throw "parse error - invalid nested array";
+						}
+						
+						// this is the meat of it, we want to pare things
+						// down as much as we can and still keep this
 						ret = concat( 
 							ret, 
 							product( 
 								[ temp ], 
 								parse4( 
 									expr[i], 
-									3 - ( temp.length + level )
+									effectivelevel
 								)
 							) 
 						);
 					}
 					else {
+						// push non-array elements onto the temp array
+						// temp array gets pushed to output array once we
+						// have created a full triple. Partial triples on 
+						// the temp array get joined with array coming back
+						// from recursion to form triples
 						temp.push( expr[i] );
 						if( temp.length == level ) {
 							ret.push( temp );
@@ -49,6 +88,8 @@
 				return ret;
 			}
 			
+			// now we are keeping track of level. It's a start. Otherwise 
+			// identical to the previous attempt though.
 			function parse3( expr, level ) {
 				level = level || 0;
 				var head = [];
@@ -68,6 +109,9 @@
 				return ret;
 			}
 			
+			// starting to get closer here - we have head/tail arrays, but
+			// we do simple concat instead of cartesian join. Also not keeping
+			// track of depth or how many elements to capture into head.
 			function parse2( expr ) {
 				var head = [];
 				var tail = [];
@@ -86,6 +130,12 @@
 				return ret;
 			}
 			
+			// first attempt - in this method we keep passing the output array
+			// down into the recursion - we don't 'return' we keep working 
+			// on the stack. This didn't work, problem is that we don't know 
+			// how many elements that we need to form a full triple at the level
+			// we are currently at. We try to use the triples output array to 
+			// figure this out.
 			function parse( expr, triples ) {
 				for( var i=0; i < expr.length; i++ ) {
 					if( typeOf( expr[i] ) == 'array' ) {
