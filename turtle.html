@@ -1,7 +1,10 @@
 <!doctype html>
 <html>
 	<head>
+		<script src="funcs.js" type="text/javascript" language="javascript"></script>
+		<script src="http://www.json.org/json2.js" type="text/javascript" language="javascript"></script>
 		<script>
+			
 			/*
 			Javascript implementation of something similar to rdf turtle representation
 			*/
@@ -11,8 +14,40 @@
 				var trips = [];
 				// parse( expression1, trips );
 				// parse2( expression1 );
-				parse3( expression1 );
+				var foo = parse4( expression1 );
 				console.log( trips );
+			}
+			
+			function parse4( expr, level ) {
+				level = level || 3;
+				var ret = [];
+				var temp = [];
+				for( var i=0; i < expr.length; i++ ) {
+					if( temp.length < level ) {
+						if( typeOf( expr[i] ) == 'array' ) {
+							ret = concat( 
+								ret, 
+								product( 
+									[ temp ], 
+									parse4( 
+										expr[i], 
+										level - 1
+									)
+								) 
+							);
+						}
+						else {
+							temp.push( expr[i] );
+						}
+					}
+					else {
+						ret.push( temp );
+						temp = [];
+						temp.push( expr[i] );
+					}
+				}
+				ret.push( temp );
+				return ret;
 			}
 			
 			function parse3( expr, level ) {

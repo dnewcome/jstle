@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+	<head>
+		<script src="funcs.js" type="text/javascript" language="javascript"></script>
+		<script>
+			
+			function test() {
+			
+				var array1 = [
+					[ ':a' ]
+				];
+				
+				var array2 = [
+					[ ':a' ], 
+					[ ':b' ]
+				];
+				
+				var array3 = [
+					[ ':b', ':c' ],
+					[ ':d', ':e' ]
+				];
+				
+				
+				// var expression1 = [ ':a', [ ':b', ':c', ':d', [ ':e', ':f' ] ] ];
+				var exp = product( 
+					[[ ':a' ]], 
+					concat( 
+						[[ ':b', ':c' ]], 
+						product( 
+							[[ ':d' ]], 
+							[[ ':e' ], [ ':f' ]] 
+						)
+					)
+				);
+				
+				var res1 = product( array1, array3 );
+				var res2 = product( array2, array3 );
+				var res3 = product( array3, array3 );
+				var res4 = product( res1, res2 );
+				
+				console.log( "done" );
+			}
+
+		</script>
+	</head>
+	<body onload="test();">
+	</body>
+</html>
