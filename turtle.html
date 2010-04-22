@@ -10,11 +10,14 @@
 			*/
 			function test() {
 				var expression1 = [ ':a', [ ':b', ':c', ':d', [ ':e', ':f' ] ] ];
-				 
+				var expression2 = [ ':a', ':b', [ ':c', ':d', ':e', ':f' ] ];				
+ 
 				var trips = [];
 				// parse( expression1, trips );
 				// parse2( expression1 );
-				var foo = parse4( expression1 );
+				var result1 = parse4( expression1 );
+				var result2 = parse4( expression2 );
+				
 				console.log( trips );
 			}
 			
@@ -30,7 +33,7 @@
 								[ temp ], 
 								parse4( 
 									expr[i], 
-									level - 1
+									3 - temp.length
 								)
 							) 
 						);
