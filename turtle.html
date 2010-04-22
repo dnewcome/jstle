@@ -23,30 +23,26 @@
 				var ret = [];
 				var temp = [];
 				for( var i=0; i < expr.length; i++ ) {
-					if( temp.length < level ) {
-						if( typeOf( expr[i] ) == 'array' ) {
-							ret = concat( 
-								ret, 
-								product( 
-									[ temp ], 
-									parse4( 
-										expr[i], 
-										level - 1
-									)
-								) 
-							);
-						}
-						else {
-							temp.push( expr[i] );
-						}
+					if( typeOf( expr[i] ) == 'array' ) {
+						ret = concat( 
+							ret, 
+							product( 
+								[ temp ], 
+								parse4( 
+									expr[i], 
+									level - 1
+								)
+							) 
+						);
 					}
 					else {
-						ret.push( temp );
-						temp = [];
 						temp.push( expr[i] );
+						if( temp.length == level ) {
+							ret.push( temp );
+							temp = [];
+						}
 					}
 				}
-				ret.push( temp );
 				return ret;
 			}
 			
