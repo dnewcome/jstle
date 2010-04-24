@@ -43,8 +43,8 @@ Jstle is able to parse @prefix namespace directives similarly to Turtle as
 		[ '@prefix', 'pfx', 'http://www.example.com/' ],
 		[ 'pfx:a', [ 'pfx:b',   'pfx:c', 
 					 'pfx:d', [ 'pfx:e', 
-								{ 'pfx:f': { 'pfx:g': 'pfx:h' } } ] ] ]
-	];
+							  { 'pfx:f': { 'pfx:g': 'pfx:h' } } ] ] ]
+	]
 
 The equivalent unabbreviated N-Triples representation of the above when parsed is
 	
