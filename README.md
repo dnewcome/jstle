@@ -41,8 +41,16 @@ We arrive at the following Jstle representation
 								{ 'pfx:f': { 'pfx:g': 'pfx:h' } } ] ] ]
 	];
 
-As apparent from the preceding example, Jstle is able to parse @prefix directives
-similarly to Turtle. The equivalent unabbreviated N-Triples notation would be
+Jstle is able to parse @prefix directives similarly to Turtle as shown in the example.
+The equivalent unabbreviated N-Triples notation would be
+	
+	<http://www.example.com/a> <http://www.example.com/b> <http://www.example.com/c> .
+	<http://www.example.com/a> <http://www.example.com/d> <http://www.example.com/e> .
+	<http://www.example.com/a> <http://www.example.com/d> <undefined58> .
+	<undefined58> <http://www.example.com/f> <undefined815> .
+	<undefined815> "<http://www.example.com/g> <http://www.example.com/h> .
+
+Which is represented by Jstle as the following equivalent Javascript array
 
 	[
 		["<http://www.example.com/a>", "<http://www.example.com/b>", "<http://www.example.com/c>"], 
