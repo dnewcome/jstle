@@ -54,7 +54,7 @@ The equivalent unabbreviated N-Triples representation of the above when parsed i
 	<undefined58> <http://www.example.com/f> <undefined815> .
 	<undefined815> "<http://www.example.com/g> <http://www.example.com/h> .
 
-Which is represented by Jstle as the following equivalent Javascript array
+Which is represented by Jstle internally as the following equivalent Javascript array
 
 	[
 		["<http://www.example.com/a>", "<http://www.example.com/b>", "<http://www.example.com/c>"], 
