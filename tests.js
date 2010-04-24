@@ -14,18 +14,24 @@ function testFullParser()
 }
 
 function testParseBlankNode() {
-	var expression1 = { ':a': ':b' };
-	var result1 = parseBlankNode( '_:blank', expression1 );
+	
+	var expression1 = [ { ':a': ':b' } ];
+	var result1 = outerparse( expression1 );
 	console.log( result1 );
 	
-	var expression2 = { ':a': [':b',':c'] };
-	var result2 = parseBlankNode( '_:blank', expression2 );
+	var expression2 = [ { ':a': [':b',':c'] } ];
+	var result2 = outerparse( expression2 );
 	console.log( result2 );
 	
-	// case fails right now - we don't support nested blank nodes yet
-	var expression3 = { ':a': {':b': ':c'} };
-	var result3 = parseBlankNode( '_:blank', expression3 );
+	var expression3 = [ 
+		[ '@prefix', '', 'http://www.example.com/' ],
+		[ '@prefix', '_', '_:' ],
+		{ ':a': {':b': ':c'} } 
+	];
+	var result3 = outerparse( expression3 );
 	console.log( result3 );
+	
+
 }
 
 function testTripleParser() 
