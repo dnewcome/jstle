@@ -1,11 +1,24 @@
 var namespaces = {};
 
+// TODO: return value is global as a hack to avoid passing 
+// too much data around int the case of parsing blank nodes,
+// which need to return full triples outside of the normal scheme
+// of parsing triples expressions. It isn't easy to do the blank
+// nodes in a separate step since once we are out of scope where 
+// blank node was assigned ID, we don't have ready access to match
+// up the nodeIDs later
+var res = [];
+
 function outerparse( expr ) {
-	var res = [];
+	res = [];
 	for( var i=0; i < expr.length; i++ ) {
 		// evaluate a directive statement
 		if( expr[i][0] == "@prefix" ) {
 			namespaces[ expr[i][1] ] = expr[i][2];
+		}
+		else if( typeOf( expr[i] ) == 'object' ) {
+			var blankNodeID = '_:' + Math.floor( Math.random() * 1001 );
+			parseBlankNode( blankNodeID, expr[i] );
 		}
 		else {
 			res = concat( res, parse( expr[i] ) );
@@ -70,7 +83,8 @@ function parse( expr, level ) {
 				ret.push( temp );
 				temp = [];
 			}
-			ret = concat( ret, parseBlankNode( blankNodeID, expr[i] ) );
+			parseBlankNode( blankNodeID, expr[i] );
+			
 		}
 		else {
 			// push non-array elements onto the temp array
@@ -91,19 +105,28 @@ function parse( expr, level ) {
 // called after adding nodeid to current triple, 
 // so any assertions in the blank node are made w/
 // same blank nodeid given as parameter 
+// note that results are directly added to response global
 function parseBlankNode( nodeID, expr ) {
-	ret = [];
-	tmp = [ nodeID ];
+	var tmp = [ nodeID ];
 	for( pred in expr ) {
 		tmp.push( pred );
-		// object could possibly be a list, so parse
-		// TODO: change api of product and parse to take single element
-		// expressions without enclosing array - syntax here is awkward
-		var parsearg = typeOf( expr[pred] ) == 'array' ? expr[pred] : [ expr[pred] ];
-		ret = concat( ret, product( [ tmp ] , parse( parsearg, 1 ) ) );
+		// continue parsing if we don't have another nested blank
+		if( typeOf( expr[pred] ) != 'object' ) {
+			// object could possibly be a list, so parse
+			// TODO: change api of product and parse to take single element
+			// expressions without enclosing array - syntax here is awkward
+			var parsearg = typeOf( expr[pred] ) == 'array' ? expr[pred] : [ expr[pred] ];
+			res = concat( res, product( [ tmp ] , parse( parsearg, 1 ) ) );
+		}
+		else {
+			// we have a nested blank
+			var blankNodeID = '_:' + Math.floor( Math.random() * 1001 );
+			tmp.push( blankNodeID );
+			res.push( concat( res, tmp ) );
+			parseBlankNode( blankNodeID, expr[pred] );
+		}	
 		tmp = [ nodeID ];
 	}
-	return ret;
 }
 
 // return cartesian join of two arrays
