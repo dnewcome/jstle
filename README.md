@@ -18,9 +18,9 @@ Javascript.
 
 # Synopsis
 
-Given the following RDF graph in Turtle expression notation
+Given the following RDF graph expressed as a Turtle statement
 	
-	:a :b :c ; :d :e , :f
+	:a :b :c ; :d :e , :f .
 
 We can write the following JSON literal to represent the same graph in Jstle
 	
