@@ -21,6 +21,17 @@ function testFullParser()
 				
 	var result2 = Jstle.parse( expression2 );
 	console.log( result2 );
+	
+	// equiv turtle - :a :b :c ; :d :e , [ :f [ :g :h ] ] .
+	var expression3 = [
+		[ '@prefix', 'pfx', 'http://www.example.com/' ],
+		[ 'pfx:a', [ 'pfx:b',   'pfx:c', 
+					 'pfx:d', [ 'pfx:e', 
+								{ 'pfx:f': { 'pfx:g': 'pfx:h' } } ] ] ]
+	];
+				
+	var result3 = Jstle.parse( expression3 );
+	console.log( result3 );
 }
 
 function testParseBlankNode() {
@@ -79,4 +90,42 @@ function testTripleParser()
 	var result5 = JSON.stringify( parse( expression5 ) );
 	equal( "test5", result5, '[[":a",":b",":c"],[":a",":b",":d"],[":a",":e",":f"],[":a",":e",":g"]]' );
 	
+}
+
+// tests for the internal product() method used by the parser
+function testProduct() {
+
+	var array1 = [
+		[ ':a' ]
+	];
+	
+	var array2 = [
+		[ ':a' ], 
+		[ ':b' ]
+	];
+	
+	var array3 = [
+		[ ':b', ':c' ],
+		[ ':d', ':e' ]
+	];
+	
+	
+	// var expression1 = [ ':a', [ ':b', ':c', ':d', [ ':e', ':f' ] ] ];
+	var exp = product( 
+		[[ ':a' ]], 
+		concat( 
+			[[ ':b', ':c' ]], 
+			product( 
+				[[ ':d' ]], 
+				[[ ':e' ], [ ':f' ]] 
+			)
+		)
+	);
+	
+	var res1 = product( array1, array3 );
+	var res2 = product( array2, array3 );
+	var res3 = product( array3, array3 );
+	var res4 = product( res1, res2 );
+	
+	console.log( "done" );
 }
