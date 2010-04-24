@@ -1,3 +1,8 @@
+(function() {
+
+Jstle = {};
+Jstle.parse = outerparse;
+
 var namespaces = {};
 
 // TODO: return value is global as a hack to avoid passing 
@@ -165,3 +170,4 @@ function typeOf(value) {
 	return s;
 }
 
+})();
