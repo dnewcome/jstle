@@ -2,179 +2,62 @@
 <html>
 	<head>
 		<script src="funcs.js" type="text/javascript" language="javascript"></script>
-		<script src="http://www.json.org/json2.js" type="text/javascript" language="javascript"></script>
+		<script src="json2.js" type="text/javascript" language="javascript"></script>
 		<script>
+			
+			function equal( name, actual, expected ) {
+				if( actual == expected ) {
+					console.log( name + ': pass' );
+				}
+				else {
+					console.log( name + ': fail' );
+				}
+			}
 			
 			/*
 			Javascript implementation of something similar to rdf turtle representation
 			*/
 			function test() {
+			
 				var expression1 = [ ':a', [ ':b', ':c', ':d', [ ':e', ':f' ] ] ];
+				var result1 = JSON.stringify( parse( expression1 ) );
+				equal( "test1", result1, '[[":a",":b",":c"],[":a",":d",":e"],[":a",":d",":f"]]' );
+				
 				var expression2 = [ ':a', ':b', [ ':c', ':d', ':e', ':f' ] ];		
+				var result2 = JSON.stringify( parse( expression2 ) );
+				equal( "test2", result2, '[[":a",":b",":c"],[":a",":b",":d"],[":a",":b",":e"],[":a",":b",":f"]]' );
 				
 				// not valid turtle expression, but parses anyway,
 				var expression3 = [ ':a', [ ':b', [ ':c', ':d', ':e', ':f' ] ] ];		
+				var result3 = JSON.stringify( parse( expression3 ) );
+				equal( "test3", result3, '[[":a",":b",":c"],[":a",":b",":d"],[":a",":b",":e"],[":a",":b",":f"]]' );
 				
-				// too many levels 
+				// throws exception 'too many levels'
 				var expression4 = [ ':a', [ ':b', [ ':c', [ ':d', ':e', ':f' ] ] ] ];		
+				var result4;
+				try {
+					result4 = parse( expression4 );
+				}
+				catch( e ) {
+					result4 = e;
+				}
+				equal( "test4", result4, 'parse error - invalid nested array' );
 				
 				var expression5 = [ ':a', [ ':b', [ ':c', ':d' ] ], ':e', [ ':f', ':g' ] ]; // :a :b :c , :d ; :e :f , :g .
+				var result5 = JSON.stringify( parse( expression5 ) );
+				equal( "test5", result5, '[[":a",":b",":c"],[":a",":b",":d"],[":a",":e",":f"],[":a",":e",":g"]]' );
 				
-				var trips = [];
-				// parse( expression1, trips );
-				// parse2( expression1 );
-				var result1 = parse4( expression1 );
-				var result2 = parse4( expression2 );
-				var result3 = parse4( expression3 );
+				// not a valid turtle expression
+				/*
+				var expression6 = [ [ ':a', ':b' ], [ ':c', ':d' ], ':e', ':f', ':g' ];
+				var result6 = parse( expression6 );
+				console.log( JSON.stringify( result6 ) );
+				*/
 				
-				// throws exception
-				// var result4 = parse4( expression4 );
-				
-				var result5 = parse4( expression5 );
-				
-				console.log( trips );
+				console.log( "finished" );
 			}
 			
-			function parse4( expr, level ) {
-				// we start with level 3 since we are trying to end up
-				// with three-element triples
-				level = level || 3;
-				
-				var ret = [];
-				var temp = [];
-				
-				// iterate over the input elements
-				for( var i=0; i < expr.length; i++ ) {
-					if( typeOf( expr[i] ) == 'array' ) {
-						// TODO: this way of tracking the number
-						// of elements to caputure is kind of goofy
-						var effectivelevel;
-						if( level == 2 ) {
-							effectivelevel = 1;
-						}
-						else if( level == 3 ) {
-							effectivelevel = 3 - temp.length;
-						}
-						else {
-							throw "parse error - invalid nested array";
-						}
-						
-						// this is the meat of it, we want to pare things
-						// down as much as we can and still keep this
-						ret = concat( 
-							ret, 
-							product( 
-								[ temp ], 
-								parse4( 
-									expr[i], 
-									effectivelevel
-								)
-							) 
-						);
-					}
-					else {
-						// push non-array elements onto the temp array
-						// temp array gets pushed to output array once we
-						// have created a full triple. Partial triples on 
-						// the temp array get joined with array coming back
-						// from recursion to form triples
-						temp.push( expr[i] );
-						if( temp.length == level ) {
-							ret.push( temp );
-							temp = [];
-						}
-					}
-				}
-				return ret;
-			}
-			
-			// now we are keeping track of level. It's a start. Otherwise 
-			// identical to the previous attempt though.
-			function parse3( expr, level ) {
-				level = level || 0;
-				var head = [];
-				var tail = [];
-				var ret = [];
-				for( var i=0; i < expr.length; i++ ) {
-					if( typeOf( expr[i] ) != 'array' ) {
-						head.push( expr[i] );
-					}
-					else {
-						tail = parse3( expr[i], level + 1 );
-					}
-				}
-				for( var j=0; j < tail.length; j++ ) {
-					ret.push( head.concat( tail[j] ) );
-				}
-				return ret;
-			}
-			
-			// starting to get closer here - we have head/tail arrays, but
-			// we do simple concat instead of cartesian join. Also not keeping
-			// track of depth or how many elements to capture into head.
-			function parse2( expr ) {
-				var head = [];
-				var tail = [];
-				var ret = [];
-				for( var i=0; i < expr.length; i++ ) {
-					if( typeOf( expr[i] ) != 'array' ) {
-						head.push( expr[i] );
-					}
-					else {
-						tail = parse2( expr[i] );
-					}
-				}
-				for( var j=0; j < tail.length; j++ ) {
-					ret.push( head.concat( tail[j] ) );
-				}
-				return ret;
-			}
-			
-			// first attempt - in this method we keep passing the output array
-			// down into the recursion - we don't 'return' we keep working 
-			// on the stack. This didn't work, problem is that we don't know 
-			// how many elements that we need to form a full triple at the level
-			// we are currently at. We try to use the triples output array to 
-			// figure this out.
-			function parse( expr, triples ) {
-				for( var i=0; i < expr.length; i++ ) {
-					if( typeOf( expr[i] ) == 'array' ) {
-						parse( expr[i], triples );
-					}
-					else {
-						if( triples.length == 0 ) {
-							triples.push( [] );
-						}
-						if( triples[triples.length - 1].length < 3 ) {
-							triples[triples.length - 1].push( expr[i] );
-						}
-						else {
-							triples.push( [] );
-							triples[triples.length - 1].push( expr[i] );
-						}
-					}
-				}
-			}
-			
-			/**
-			* typeOf function published by Douglas Crockford in ECMAScript recommendations
-			* http://www.crockford.com/javascript/recommend.html
-			*/
-			function typeOf(value) {
-				var s = typeof value;
-				if (s === 'object') {
-					if (value) {
-						if (typeof value.length === 'number' &&
-								!(value.propertyIsEnumerable('length')) &&
-								typeof value.splice === 'function') {
-							s = 'array';
-						}
-					} else {
-						s = 'null';
-					}
-				}
-				return s;
-			}
+
 
 		</script>
 	</head>
