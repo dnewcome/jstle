@@ -12,7 +12,7 @@ object literal notation built into the language. However, standard Javascript RD
 such as [RDF JSON](http://n2.talis.com/wiki/RDF_JSON_Specification) are relatively verbose, allowing
 only minimal levels of expressiveness and limited ability to avoid repetition.
 Languages such as Turtle are terse and easily written, but must be parsed as text
-and cannot be manipulated easily in its source representation. Jstle was born of a desire
+and cannot be manipulated easily in their source representation. Jstle was born of a desire
 to have a Turtle-like language that was able to be programmatically processed directly using 
 Javascript.
 
@@ -28,11 +28,16 @@ We can write the following JSON literal to represent the same graph in Jstle
 
 	
 Jstle also supports blank nodes, denoted by inline object literals.
-Given the following Turtle, using bracket blank node notation
+Given the following Turtle using bracket blank node notation
 
-	:a :b :c ; :d :e , [ :f [ :g :h ] ] .
+	:a :b :c ; :d :e , [ :f :g ] .
 	
 We arrive at the following Jstle representation
+
+	[ ':a', [ ':b', ':c', ':d', [ ':e', { ':f': ':g' } ] ] ]
+								
+
+Jstle is able to parse @prefix namespace directives similarly to Turtle as
 
 	[
 		[ '@prefix', 'pfx', 'http://www.example.com/' ],
@@ -41,8 +46,7 @@ We arrive at the following Jstle representation
 								{ 'pfx:f': { 'pfx:g': 'pfx:h' } } ] ] ]
 	];
 
-Jstle is able to parse @prefix directives similarly to Turtle as shown in the example.
-The equivalent unabbreviated N-Triples notation would be
+The equivalent unabbreviated N-Triples representation of the above when parsed is
 	
 	<http://www.example.com/a> <http://www.example.com/b> <http://www.example.com/c> .
 	<http://www.example.com/a> <http://www.example.com/d> <http://www.example.com/e> .
