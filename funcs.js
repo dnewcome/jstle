@@ -1,13 +1,26 @@
-var namespaces = [];
+var namespaces = {};
 
 function outerparse( expr ) {
+	var res = [];
 	for( var i=0; i < expr.length; i++ ) {
 		// evaluate a directive statement
 		if( expr[i][0] == "@prefix" ) {
-			namespaces.push( { prefix: expr[i][1], uri: expr[i][2] } );
+			namespaces[ expr[i][1] ] = expr[i][2];
 		}
 		else {
-			parse( expr[i] );
+			res = concat( res, parse( expr[i] ) );
+		}
+	}
+	resolvePrefixes( res );
+	return res;
+}
+
+function resolvePrefixes( expr ) {
+	for( var i=0; i < expr.length; i++ ) {
+		for( var j=0; j < expr[i].length; j++ ) {	
+			var prefix = expr[i][j].split(':')[0];
+			var suffix = expr[i][j].split(':')[1];
+			expr[i][j] = '<' + namespaces[ prefix ] + suffix + '>';
 		}
 	}
 }
