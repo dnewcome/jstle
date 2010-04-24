@@ -1,18 +1,17 @@
 function testFullParser() 
 {
-	// :a :b :c ; :d :e , :f .
+	// equiv turtle - :a :b :c ; :d :e , :f .
 	var expression1 = [
 		[ '@prefix', 'pfx', 'http://www.example.com/' ],
 		[ 'pfx:a', [ 'pfx:b',   'pfx:c', 
 					 'pfx:d', [ 'pfx:e', 
 								'pfx:f' ] ] ]
 	];
-				
+	
 	var result1 = Jstle.parse( expression1 );
 	console.log( result1 );
-	// equal( "fulltest1", JSON.stringify( result1 ), "");
-	
-	// :a :b :c ; :d :e , :f .
+
+	// equiv turtle - :a :b :c ; :d :e , [ :f :g ] .
 	var expression2 = [
 		[ '@prefix', 'pfx', 'http://www.example.com/' ],
 		[ 'pfx:a', [ 'pfx:b',   'pfx:c', 
@@ -22,7 +21,6 @@ function testFullParser()
 				
 	var result2 = Jstle.parse( expression2 );
 	console.log( result2 );
-	// equal( "fulltest2", JSON.stringify( result2 ), "");
 }
 
 function testParseBlankNode() {
