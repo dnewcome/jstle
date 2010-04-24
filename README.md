@@ -1,14 +1,15 @@
 # About
 
 Jstle (pronounced `jostle') is a terse, Javascript-native literal serialization
-language for RDF graphs. The semantic rules loosely follow those of the text-based Turtle RDF
-serialization language by Dave Beckett and Tim Berners-Lee http://www.w3.org/TeamSubmission/turtle/
+language for RDF graphs. The semantic rules loosely follow those of the text-based 
+[Turtle](http://www.w3.org/TeamSubmission/turtle/) RDF
+serialization language by Dave Beckett and Tim Berners-Lee.
 
 # Motivation
 
 Javascript is a powerful language for data manipulation, owing to a flexible 
 object literal notation built into the language. However, standard Javascript RDF representations
-such as RDF JSON http://n2.talis.com/wiki/RDF_JSON_Specification are relatively verbose, allowing
+such as [RDF JSON](http://n2.talis.com/wiki/RDF_JSON_Specification) are relatively verbose, allowing
 only minimal levels of expressiveness and limited ability to avoid repetition.
 Languages such as Turtle are terse and easily written, but must be parsed as text
 and cannot be manipulated easily in its source representation. Jstle was born of a desire
