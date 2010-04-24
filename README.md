@@ -22,12 +22,12 @@ Given the following RDF graph in Turtle expression notation
 	
 	:a :b :c ; :d :e , :f
 
-We can write the following JSON literal to represent the same graph
+We can write the following JSON literal to represent the same graph in Jstle
 	
 	[ ':a', [ ':b', ':c', ':d', [ ':e', ':f' ] ] ]
 
 	
-Jstle also supports blank nodes, denoted by inline object literals
+Jstle also supports blank nodes, denoted by inline object literals.
 Given the following Turtle, using bracket blank node notation
 
 	:a :b :c ; :d :e , [ :f [ :g :h ] ] .
@@ -60,8 +60,6 @@ Which is represented by Jstle as the following equivalent Javascript array
 		["<undefined815>", "<http://www.example.com/g>", "<http://www.example.com/h>"]
 	]
 
-# Example
-<TODO:>
 
 # Status
 This software is a proof of concept. There are probably cases that it cannot handle,
@@ -71,7 +69,7 @@ and should not be used in production.
 - No support for RDF collections notation
 - @base directive not supported
 - no datatype support
-- `a' shorthand for `is-a' not supported
+- 'a' shorthand for RDF 'is-a' not supported
 
 # License
 Jstle is provided under the MIT free software license. See the file LICENSE for 
