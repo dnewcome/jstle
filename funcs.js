@@ -26,10 +26,11 @@ function outerparse( expr ) {
 			parseBlankNode( blankNodeID, expr[i] );
 		}
 		else {
-			res = concat( res, parse( expr[i] ) );
+			res = concat( parse( expr[i] ), res );
 		}
 	}
 	resolvePrefixes( res );
+	namespaces = {};
 	return res;
 }
 
