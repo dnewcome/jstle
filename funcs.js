@@ -79,6 +79,24 @@ function parse( expr, level ) {
 	return ret;
 }
 
+// called after adding nodeid to current triple, 
+// so any assertions in the blank node are made w/
+// same blank nodeid given as parameter 
+function parseBlankNode( nodeID, expr ) {
+	ret = [];
+	tmp = [ nodeID ];
+	for( pred in expr ) {
+		tmp.push( pred );
+		// object could possibly be a list, so parse
+		// TODO: change api of product and parse to take single element
+		// expressions without enclosing array - syntax here is awkward
+		var parsearg = typeOf( expr[pred] ) == 'array' ? expr[pred] : [ expr[pred] ];
+		ret = concat( ret, product( [ tmp ] , parse( parsearg, 1 ) ) );
+		tmp = [ nodeID ];
+	}
+	return ret;
+}
+
 // return cartesian join of two arrays
 function product( x, y ) {
 	var ret = [];

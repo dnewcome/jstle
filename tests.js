@@ -13,6 +13,21 @@ function testFullParser()
 	equal( "fulltest1", JSON.stringify( result1 ), "");
 }
 
+function testParseBlankNode() {
+	var expression1 = { ':a': ':b' };
+	var result1 = parseBlankNode( '_:blank', expression1 );
+	console.log( result1 );
+	
+	var expression2 = { ':a': [':b',':c'] };
+	var result2 = parseBlankNode( '_:blank', expression2 );
+	console.log( result2 );
+	
+	// case fails right now - we don't support nested blank nodes yet
+	var expression3 = { ':a': {':b': ':c'} };
+	var result3 = parseBlankNode( '_:blank', expression3 );
+	console.log( result3 );
+}
+
 function testTripleParser() 
 {
 	var expression1 = [ ':a', [ ':b', ':c', ':d', [ ':e', ':f' ] ] ];
