@@ -2,6 +2,7 @@ var namespaces = [];
 
 function outerparse( expr ) {
 	for( var i=0; i < expr.length; i++ ) {
+		// evaluate a directive statement
 		if( expr[i][0] == "@prefix" ) {
 			namespaces.push( { prefix: expr[i][1], uri: expr[i][2] } );
 		}
@@ -11,6 +12,7 @@ function outerparse( expr ) {
 	}
 }
 
+// evaluate a triples statement
 function parse( expr, level ) {
 	// we start with level 3 since we are trying to end up
 	// with three-element triples
