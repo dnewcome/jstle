@@ -1,3 +1,16 @@
+var namespaces = [];
+
+function outerparse( expr ) {
+	for( var i=0; i < expr.length; i++ ) {
+		if( expr[i][0] == "@prefix" ) {
+			namespaces.push( { prefix: expr[i][1], uri: expr[i][2] } );
+		}
+		else {
+			parse( expr[i] );
+		}
+	}
+}
+
 function parse( expr, level ) {
 	// we start with level 3 since we are trying to end up
 	// with three-element triples
