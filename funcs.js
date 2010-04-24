@@ -63,6 +63,15 @@ function parse( expr, level ) {
 				) 
 			);
 		}
+		else if( typeOf( expr[i] ) == 'object' ) {
+			var blankNodeID = '_:' + Math.floor( Math.random() * 1001 );
+			temp.push( blankNodeID );
+			if( temp.length == level ) {
+				ret.push( temp );
+				temp = [];
+			}
+			ret = concat( ret, parseBlankNode( blankNodeID, expr[i] ) );
+		}
 		else {
 			// push non-array elements onto the temp array
 			// temp array gets pushed to output array once we
