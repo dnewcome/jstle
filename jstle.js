@@ -1,5 +1,5 @@
 /**
-* Jath is free software provided under the MIT license.
+* Jstle is free software provided under the MIT license.
 *	See LICENSE file for full text of the license.
 *	Copyright 2010 Dan Newcome.
 */
