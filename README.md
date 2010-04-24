@@ -64,6 +64,54 @@ Which is represented by Jstle as the following equivalent Javascript array
 		["<undefined815>", "<http://www.example.com/g>", "<http://www.example.com/h>"]
 	]
 
+For comparison, the equivalent RDF JSON looks something like this (note that Jstle 
+notation doesn't support types yet, although of course you may assert the type using an RDF statement)
+
+	{
+	  "http://www.example.com/a": {
+		"http://www.example.com/b": [
+		  {
+			"value": "http://www.example.com/c",
+			"type": "uri"
+		  }
+		],
+		"http://www.example.com/d": [
+		  {
+			"value": "http://www.example.com/e",
+			"type": "uri"
+		  },
+		  {
+			"value": "undefined58",
+			"type": "uri"
+		  }
+		]
+	  },
+	  "undefined58": {
+		"http://www.example.com/f": [
+		  {
+			"value": "undefined815",
+			"type": "uri"
+		  }
+		]
+	  }
+	}
+	
+	
+And in RDF/XML
+
+
+	<rdf:RDF xmlns:pfx="http://www.example.com/">
+		<rdf:Description rdf:about="http://www.example.com/a">
+			<pfx:b rdf:resource="http://www.example.com/c"/>
+			<pfx:d rdf:resource="http://www.example.com/e"/>
+			<pfx:d rdf:resource="undefined58"/>
+		</rdf:Description>
+		<rdf:Description rdf:about="undefined58">
+			<pfx:f rdf:resource="undefined815"/>
+		</rdf:Description>
+	</rdf:RDF>
+
+
 
 # Status
 This software is a proof of concept. There are probably cases that it cannot handle,
